@@ -13,22 +13,13 @@ x = loadXMLDoc("levels.xml"); //loading the xml document
 var gridIds = new Array(); // seemed easier to keep the array global
 
 
-function restartgame() {
-    NEWLEVEL++;
-    localStorage.setItem("NEWLEVEL", NEWLEVEL);
-    window.location.reload();
 
-}
-;
 
 
 $(function() {
 
-    $("#playground").playground();
-
-
-    function play() {
-        document.write('<link rel="stylesheet" type="text/css" href="laserGate.css"/><h1>Laser Gate</h1><div class="laserGate"><table id="grid" border="0" cellspacing = "0" cellpadding = "0" id="a" align = "center">');
+    function play(level) {
+        document.write('<link rel="stylesheet" type="text/css" href="laserGate.css"/><div class="laserGate"><h1>Laser Gate</h1><table id="grid" border="0" cellspacing = "0" cellpadding = "0" id="a" align = "center">');
         var numCols = 12;
         var numRows = 12;
         var avatar; 
@@ -71,7 +62,7 @@ $(function() {
             document.write('</tr></div>');
         }
         ;
-
+        
 
         document.write('</table>');
 
@@ -86,33 +77,35 @@ $(function() {
         }
 
 
-        level1();
+//        level1();
+//
+//
+//
+//        function level1() { // i had to use this first level function 
+//            //$("#00").text("laser").addClass("laser");
+//            //$("#60").text("laser").addClass("laser");
+//            // $("#3" + numCols + "").text("laser").addClass("laser");
+//            //$("#" + numRows + "10").text("laser").addClass("laser")
+//
+//            avatar = numRows.toString() + Math.floor(numCols / 2).toString();
+//            $("#" + avatar + "").addClass("avatar");
+//            gridIds = loadLevel(0);
+//
+//            for (i = 0; i < gridIds.length; i++) {
+//                $("#" + gridIds[i]).text("laser").addClass("laser");
+//            }
+//        }
 
-
-
-        function level1() { // i had to use this first level function 
-            //$("#00").text("laser").addClass("laser");
-            //$("#60").text("laser").addClass("laser");
-            // $("#3" + numCols + "").text("laser").addClass("laser");
-            //$("#" + numRows + "10").text("laser").addClass("laser")
-
-            avatar = numRows.toString() + Math.floor(numCols / 2).toString();
-            $("#" + avatar + "").addClass("avatar");
-            gridIds = loadLevel(0);
-
-            for (i = 0; i < gridIds.length; i++) {
-                $("#" + gridIds[i]).text("laser").addClass("laser");
-            }
-        }
-
-        function nextLevel() { // this will load the next levels
+        var level = level;
+        nextLevel(level);
+        function nextLevel(id) { // this will load the next levels
             $("#" + avatar + "").removeClass("avatar");
             avatar = numRows.toString() + Math.floor(numCols / 2).toString();
             $("#" + avatar + "").addClass("avatar");
             for (i = 0; i < gridIds.length; i++) { //removes the class attribute before next level
                 $("#" + gridIds[i]).empty("laser").removeClass("laser");
             }
-            gridIds = loadLevel(NEWLEVEL++); // this goes to the loadLevel funciton down below
+            gridIds = loadLevel(id++); // this goes to the loadLevel funciton down below
             // NEWLEVEL is used to find the XML tag in the NEWLEVEL index. for example 0 will find the first
             // instance of grid tags to be used and so forth. 
             for (i = 0; i < gridIds.length; i++) {
@@ -151,33 +144,57 @@ $(function() {
         }
 
         $("#nextLevel").click(function() {
-            //restartgame();
-
-            //level2();
-            nextLevel();
+            $('.laserGate').html('');
+            $('div').removeClass('laserGate');
+            menu();
         });
     }
     ;
 
 
 
+    function menu() { //this will bring the user back to the level screen so he can pick the next level
+            document.write('<link rel="stylesheet" type="text/css" href="laserGate.css"/><div class="menu"><h1>Laser Gate</h1><table id="selector" cellspacing = "15" cellpadding = "10" id="a" align = "center">');
+            var numRows = 6;
+            var numColmns = 5;
+            var blockId = 1;
+            for(i = 0; i < numRows; i++) {
+               document.write('<tr id="row"' + i + '>');
 
+               for(j = 0; j < numColmns; j++){
+                   document.write("<td id= '" + blockId.toString() + "'>" + blockId.toString() + "</td>");
+                   blockId++;
+               };
+               document.write('</tr>');
+            };
+            document.write('</table></div>');
+
+         $('#selector td').click(function() {
+             var id = $(this).attr('id');
+             console.log("go to level " + id + "");
+             $('.menu').html(''); //not removing everything
+             $('div').removeClass("menu");
+             play(id);
+         });
+
+    }
 
 
 
     //initialize the start button
     $("#startButton").click(function() {
-        $.playground().startGame(function() {
             $("#welcomeScreen").fadeTo(1000, 0, function() {
                 $(this).remove();
             });
-            play();
+            menu();
+            //play();
 
         });
     });
 
 
-});
+
+
 
 // XML stuff
 function loadLevel(n) {
