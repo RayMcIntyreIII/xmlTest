@@ -158,7 +158,7 @@ $(function() {
             var numRows = 6;
             var numColmns = 5;
             var blockId = 1;
-            for(i = 0; i < numRows; i++) {
+            for(i = 0; i < numRows; i++) { //the menu table
                document.write('<tr id="row"' + i + '>');
 
                for(j = 0; j < numColmns; j++){
@@ -169,11 +169,11 @@ $(function() {
             };
             document.write('</table></div>');
 
-         $('#selector td').click(function() {
+         $('#selector td').click(function() { //when you click on a <td> element it will get the id and use that to correlate with the level desired
              var id = $(this).attr('id');
              console.log("go to level " + id + "");
-             $('.menu').html(''); //not removing everything
-             $('div').removeClass("menu");
+             $('.menu').html(''); //remove everything
+             $('div').removeClass("menu"); 
              play(id);
          });
 
